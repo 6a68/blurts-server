@@ -10,7 +10,6 @@ const HBSHelpers = require("../hbs-helpers");
 const UNSUB_REASONS = require("../unsubscribe_reasons");
 const sha1 = require("../sha1-utils");
 
-
 async function add(req, res) {
   const email = req.body.email;
 
@@ -31,7 +30,9 @@ async function add(req, res) {
     email,
     req.fluentFormat("user-add-email-verify-subject"),
     "default_email",
-    { email, verifyUrl, unsubscribeUrl, buttonValue, supportedLocales, whichView},
+    { email, unsubscribeUrl, buttonValue, supportedLocales, whichView,
+      buttonHref: verifyUrl,
+    },
   );
 
   res.send({
@@ -44,7 +45,6 @@ async function verify(req, res) {
   if (!req.query.token) {
     throw new FluentError("user-verify-token-error");
   }
-
   let unsafeBreachesForEmail = [];
   const verifiedEmailHash = await DB.verifyEmailHash(req.query.token);
   const unsubscribeUrl = EmailUtils.unsubscribeUrl(verifiedEmailHash);
@@ -69,6 +69,7 @@ async function verify(req, res) {
       unsafeBreachesForEmail: unsafeBreachesForEmail,
       unsubscribeUrl: unsubscribeUrl,
       buttonValue,
+      buttonHref: `${req.app.locals.SERVER_URL}/?utm_source=email&utm_medium=email&utm_campaign=fx_monitor_emails&utm_content=report`,
       whichView,
     }
   );

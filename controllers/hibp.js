@@ -71,6 +71,7 @@ async function notify (req, res) {
           breachAlert,
           SERVER_URL: req.app.locals.SERVER_URL,
           buttonValue: LocaleUtils.fluentFormat(supportedLocales, "report-scan-another-email"),
+          buttonHref: `${AppConstants.SERVER_URL}/?utm_source=email&utm_medium=email&utm_campaign=fx_monitor_emails&utm_content=breach_alert`,
           whichView: "email_partials/report",
         },
       );
